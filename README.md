@@ -1,5 +1,5 @@
 # f4keShell
-![imagen](https://i.ibb.co/JF4vVK4/cap.png)
+![imagen](https://i.ibb.co/6WqPkVD/cacap.png)
 
 [+] Muchas veces, mientras realizo un pentest, necesito escribir algo para hacerme la vida más fácil o para probar rápidamente una idea o un vector de ataque. Recientemente me encontré con un interesante vector de inyección de comandos en una aplicación web.
 (ByPass de Bloqueos para salida de datos por ICMP y todos los puertos TCP/UDP, incluido el DNS)
