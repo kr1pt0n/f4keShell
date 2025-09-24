@@ -81,6 +81,6 @@ if __name__ == '__main__':
     ReadAllTheThings = AllTheReads()
 
     while True:
-        cmd = input("> ")
+        cmd = input("webshell:~$ ")
         WriteCmd(cmd + "\n")
         time.sleep(1.1)
