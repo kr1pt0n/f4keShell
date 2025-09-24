@@ -12,4 +12,4 @@
 * Con el archivo ya en el servidor, basta ejecutar el script (no olvides modificar la ruta del "cmd.php" dentro del script 
 "f4kshell.py"para que apunte al fichero PHP y ruta correcta). Abajo se muestra un ejemplo de lo que permite realizar.
 
-![imagen](https://ibb.co/vCPtnS7q)
+![imagen](https://i.ibb.co/8n5hZHWs/cara.png)
